@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+  app:
+    build: .
+    environment:
+      DB_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+      DB_DATABASE: app
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    image: healthcheck/postgres:alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: app
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
